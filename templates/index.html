@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Image to OCR Viewer</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="images" multiple accept="image/*">
+        <button type="submit">Upload & Process</button>
+    </form>
+
+    {% if data %}
+    <div class="viewer">
+        <div class="images scroll-sync">
+            {% for image, text in data %}
+                <img src="{{ url_for('static', filename='../uploads/' + image) }}" alt="Uploaded Image">
+            {% endfor %}
+        </div>
+
+        <div class="texts scroll-sync">
+            {% for image, text in data %}
+                <textarea readonly>{{ text }}</textarea>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        const images = document.querySelector('.images');
+        const texts = document.querySelector('.texts');
+
+        function syncScroll(e) {
+            if (e.target === images) {
+                texts.scrollTop = images.scrollTop;
+            } else {
+                images.scrollTop = texts.scrollTop;
+            }
+        }
+
+        images.addEventListener('scroll', syncScroll);
+        texts.addEventListener('scroll', syncScroll);
+    </script>
+</body>
+</html>
